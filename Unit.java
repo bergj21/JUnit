@@ -178,118 +178,6 @@ public class Unit {
         }
         return map;
     }
-    
-
-   /*
-    public static Map<String, Object[]> quickCheckClass(String name) {
-	    Map<String, Object[]> map = new HashMap<String, Object[]>();
-
-        List<Method> propertyMethods = new ArrayList<>();
-
-        try {
-        
-            Class<?> c = Class.forName(name);
-            Object instance = c.getConstructor().newInstance();
-            Method[] methods = c.getDeclaredMethods();
-            // Loop through class methods and determine which are annotated with property 
-            for (Method method : c.getMethods()) {
-                if (method.isAnnotationPresent(Property.class)) {
-                    propertyMethods.add(method);
-                } 
-            }
-            // Sort the property methods such that they are executed in alphabetical order
-            propertyMethods.sort(Comparator.comparing(Method::getName));
-            // Iterate over each method annotated with property
-            for (Method method : propertyMethods) {
-                Parameter[] parameters = method.getParameters();
-                int numParam = parameters.length;
-               
-                // The list of all possible inputs
-                List<List<Object>> permutations = new ArrayList<>();
-                // Insert an empty list to start
-                List<Object> empty = new ArrayList<>();
-                permutations.add(empty);
-                // Iterate through each parameter and generate the list of all permutations
-                for (int i = 0; i < numParam; i++) {
-                    Parameter p = parameters[i];
-                    // Generate the new range of values according to the parameter
-                    List<Object> newValues = null;
-                    if (p.getType() == Integer.class && p.isAnnotationPresent(IntRange.class)) {
-                        // Generate the new input values from the IntRange
-                        IntRange r = p.getAnnotation(IntRange.class);
-                        newValues = intRange(r);
-                    }
-                    else if (p.getType() == String.class && p.isAnnotationPresent(StringSet.class)) {
-                        // Generate the new input values from the StringSet
-                        StringSet set = p.getAnnotation(StringSet.class);
-                        newValues = stringRange(set);
-                    }
-                    else if (p.getType() == List.class && p.isAnnotationPresent(ListLength.class)) {
-                        // Grab the list annotation
-                        ListLength len = p.getAnnotation(ListLength.class);
-                        // Get the annotated type from the parameter
-                        AnnotatedParameterizedType apt = (AnnotatedParameterizedType) p.getAnnotatedType();
-                        Annotation ann = apt.getAnnotatedActualTypeArguments()[0].getAnnotations()[0];
-                        // Generate range of values from the list argument
-                        List<Object> newRange = listHandler(permutations, ann, c);
-                        // Generate the permutations of list using the given range
-                        List<List<Object>> result = generatePermutation(len, newRange);
-                        // Flatten the list so that it can be combined with all permutations
-                        newValues = listFlattener(result);
-
-                    } else if (p.getType() == Object.class && p.isAnnotationPresent(ForAll.class)) {
-                        ForAll f = p.getAnnotation(ForAll.class);
-                        // Generate the new input values from the Object
-                        newValues = objectRange(f, c);
-                    } else {
-                        throw new RuntimeException("Invalid Property");
-                    }
-                    // Update the permutations list to include the new parameter values
-                    permutations = combine(permutations, newValues);
-                }
-
-                // System.out.println(permutations.toString());
-                // System.out.println(permutations.size());
-
-                map.put(method.getName(), null);
-                for (List<Object> permutation : permutations) {
-                    System.out.println(permutation.toString());
-                    Object result;
-                    try {
-                        result = method.invoke(instance, permutation.toArray());
-                        if (! (Boolean) result) {
-                            map.put(method.getName(), permutation.toArray());
-                            break;
-                        }
-                    } catch (InvocationTargetException exception) {
-                        Throwable e = exception.getCause();
-                        map.put(method.getName(), permutation.toArray());
-                        break;
-                    }
-                    
-                }
-                
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getCause());
-        }
-        // Print Map
-        for (Map.Entry<String, Object[]> entry : map.entrySet()) {
-            String key = entry.getKey();
-            Object[] value = entry.getValue();
-            System.out.print("Key: " + key + " {");
-            if (value != null) {
-                for (int i = 0; i < value.length; i++) {
-                    System.out.print(value[i] + ", ");
-                }
-            } else {
-                System.out.print("Value: " + value);
-            }
-            System.out.println("}");
-        }
-        return map;
-    }
-    */
 
     public static List<Object> handler(List<List<Object>> permutations, Parameter p, Class<?> c) {
         // Initialize the list that will contain the new parameter values
@@ -326,26 +214,7 @@ public class Unit {
         }
         return newValues;
     }
-    /*
-    private static List<Object> listHandler(List<List<Object>> permutations, Annotation ann, Class<?> c) {
-        List<Object> newValues = new ArrayList<>();
-        if (ann instanceof IntRange) {
-            IntRange r = (IntRange) ann;
-            newValues = intRange(r);
-        } else if (ann instanceof StringSet) {
-            StringSet set = (StringSet) ann;
-            newValues = stringRange(set);
-        } else if (ann instanceof ForAll) {
-            ForAll f = (ForAll) ann;
-            newValues = objectRange(f, c);
-        } else if (ann instanceof ListLength) {
-
-        } else {
-            System.out.println("Here");
-        }
-        return newValues;
-    } 
-    */
+  
     private static List<Object> listHandler(List<List<Object>> permutations, Annotation ann, Class<?> c) {
         List<Object> newValues = new ArrayList<>();
         if (ann instanceof IntRange) {
